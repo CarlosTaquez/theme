@@ -1,65 +1,180 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState } from "react";
+import {
+  Sparkles,
+  Play,
+  Image,
+  Check,
+  Monitor,
+  Sun,
+  Moon,
+} from "lucide-react";
+import "./globals.css";
+
+export default function AppearancePage() {
+  const [theme, setTheme] = useState("light");
+  const [accent, setAccent] = useState("purple");
+  const [reduceMotion, setReduceMotion] = useState(true);
+  const [autoPlay, setAutoPlay] = useState(true);
+  const [highQuality, setHighQuality] = useState(false);
+
+  const colors = ["red", "yellow", "green", "purple", "pink"];
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="page-wrapper">
+      <div className="settings-card">
+        <h1 className="title">Appearance</h1>
+        <p className="subtitle">
+          Set or customize your preferences for the system
+        </p>
+
+        <div className="divider" />
+
+        {/* Language */}
+        <div className="section">
+          <div>
+            <h2 className="section-title">Language</h2>
+            <p className="section-description">
+              Select the language of the platform
+            </p>
+          </div>
+          <select className="select">
+            <option>English</option>
+          </select>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+
+        {/* Interface Theme */}
+        <div className="section column">
+          <div>
+            <h2 className="section-title">Interface theme</h2>
+            <p className="section-description">
+              Customize your application appearance
+            </p>
+          </div>
+
+          <div className="theme-options">
+            <ThemeCard
+              icon={<Monitor size={20} />}
+              label="Auto"
+              value="auto"
+              selected={theme}
+              setSelected={setTheme}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <ThemeCard
+              icon={<Sun size={20} />}
+              label="Light"
+              value="light"
+              selected={theme}
+              setSelected={setTheme}
+            />
+            <ThemeCard
+              icon={<Moon size={20} />}
+              label="Dark"
+              value="dark"
+              selected={theme}
+              setSelected={setTheme}
+            />
+          </div>
         </div>
-      </main>
+
+        {/* Accent Color */}
+        <div className="section column">
+          <div>
+            <h2 className="section-title">Accent color</h2>
+            <p className="section-description">
+              Pick your platform's main color
+            </p>
+          </div>
+
+          <div className="color-options">
+            {colors.map((color) => (
+              <div
+                key={color}
+                className={`color ${color} ${
+                  accent === color ? "active" : ""
+                }`}
+                onClick={() => setAccent(color)}
+              >
+                {accent === color && <Check size={14} />}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Toggles */}
+        <ToggleRow
+          icon={<Sparkles size={18} />}
+          label="Reduce motion"
+          state={reduceMotion}
+          setState={setReduceMotion}
+        />
+
+        <ToggleRow
+          icon={<Play size={18} />}
+          label="Auto play"
+          state={autoPlay}
+          setState={setAutoPlay}
+        />
+
+        <ToggleRow
+          icon={<Image size={18} />}
+          label="High quality photo"
+          state={highQuality}
+          setState={setHighQuality}
+        />
+
+        <div className="divider" />
+
+        <div className="footer">
+          <button className="btn cancel">Cancel</button>
+          <button className="btn primary">Save Preferences</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ThemeCard({
+  icon,
+  label,
+  value,
+  selected,
+  setSelected,
+}: any) {
+  const isActive = selected === value;
+
+  return (
+    <div
+      className={`theme-card ${isActive ? "active" : ""}`}
+      onClick={() => setSelected(value)}
+    >
+      <div className="theme-preview">
+        {isActive && (
+          <div className="check-badge">
+            <Check size={14} />
+          </div>
+        )}
+      </div>
+      <div className="theme-label">
+        {icon}
+        <span>{label}</span>
+      </div>
+    </div>
+  );
+}
+
+function ToggleRow({ icon, label, state, setState }: any) {
+  return (
+    <div className="toggle-row">
+      <div className="toggle-left">
+        {icon}
+        <span>{label}</span>
+      </div>
+      <div
+        className={`toggle ${state ? "active" : ""}`}
+        onClick={() => setState(!state)}
+      />
     </div>
   );
 }
